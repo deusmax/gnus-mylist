@@ -667,6 +667,7 @@ ARTDATA is the gnus-mylist article data."
   (gnus-mylist-check-files)
   (gnus-message 5 "Starting gnus-mylist")
   (gnus-mylist-add-hooks)
+  (gnus-mylist-org-init)
   (gnus-mylist-read))
 
 (defun gnus-mylist-check-files ()

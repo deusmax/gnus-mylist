@@ -54,9 +54,109 @@
   :group 'gnus-mylist)
 
 (defcustom gnus-mylist-org-capture-key "e"
-  "A key from `org-capture-templates' to be used."
+    "The key used for `gnus-mylist-org-capture-template'.
+The template key should match with this value."
   :group 'gnus-mylist-org
   :type 'string)
+
+(defcustom gnus-mylist-org-capture-template
+  '("e" "Email Reply Scheduled (a)" entry
+    (file+olp "~/Documents/org/notes.org" "Tasks" "Emails")
+ "* RPLY %^{Description}  %^g
+  SCHEDULED: %^T
+  :PROPERTIES:
+  :ID:       %(org-id-new)
+  :END:
+  EmailDate: %:date-timestamp-inactive, Group: %:group \\\\
+  Added: %U \\\\
+  %a \\\\
+  %?" :prepend t :clock-in t :clock-resume t)
+  "A template for capturing gnus emails and other articles.
+A single entry for `org-capture-templates'. See its documentation
+for details."
+  :group 'gnus-mylist-org
+  :type
+  (let ((file-variants '(choice :tag "Filename       "
+				(file :tag "Literal")
+				(function :tag "Function")
+				(variable :tag "Variable")
+				(sexp :tag "Form"))))
+    `(choice :value ("" "" entry (file "~/org/notes.org") "")
+	     (list :tag "Multikey description"
+		   (string :tag "Keys       ")
+		   (string :tag "Description"))
+	     (list :tag "Template entry"
+		   (string :tag "Keys           ")
+		   (string :tag "Description    ")
+		   (choice :tag "Capture Type   " :value entry
+			   (const :tag "Org entry" entry)
+			   (const :tag "Plain list item" item)
+			   (const :tag "Checkbox item" checkitem)
+			   (const :tag "Plain text" plain)
+			   (const :tag "Table line" table-line))
+		   (choice :tag "Target location"
+			   (list :tag "File"
+			         (const :format "" file)
+			         ,file-variants)
+			   (list :tag "ID"
+			         (const :format "" id)
+			         (string :tag "  ID"))
+			   (list :tag "File & Headline"
+			         (const :format "" file+headline)
+			         ,file-variants
+			         (string :tag "  Headline"))
+			   (list :tag "File & Outline path"
+			         (const :format "" file+olp)
+			         ,file-variants
+			         (repeat :tag "Outline path" :inline t
+				         (string :tag "Headline")))
+			   (list :tag "File & Regexp"
+			         (const :format "" file+regexp)
+			         ,file-variants
+			         (regexp :tag "  Regexp"))
+			   (list :tag "File [ & Outline path ] & Date tree"
+			         (const :format "" file+olp+datetree)
+			         ,file-variants
+			         (option (repeat :tag "Outline path" :inline t
+					         (string :tag "Headline"))))
+			   (list :tag "File & function"
+			         (const :format "" file+function)
+			         ,file-variants
+			         (sexp :tag "  Function"))
+			   (list :tag "Current clocking task"
+			         (const :format "" clock))
+			   (list :tag "Function"
+			         (const :format "" function)
+			         (sexp :tag "  Function")))
+		   (choice :tag "Template       "
+			   (string)
+			   (list :tag "File"
+			         (const :format "" file)
+			         (file :tag "Template file"))
+			   (list :tag "Function"
+			         (const :format "" function)
+			         (function :tag "Template function")))
+		   (plist :inline t
+		          ;; Give the most common options as checkboxes
+		          :options (((const :format "%v " :prepend) (const t))
+				    ((const :format "%v " :immediate-finish) (const t))
+				    ((const :format "%v " :jump-to-captured) (const t))
+				    ((const :format "%v " :empty-lines) (const 1))
+				    ((const :format "%v " :empty-lines-before) (const 1))
+				    ((const :format "%v " :empty-lines-after) (const 1))
+				    ((const :format "%v " :clock-in) (const t))
+				    ((const :format "%v " :clock-keep) (const t))
+				    ((const :format "%v " :clock-resume) (const t))
+				    ((const :format "%v " :time-prompt) (const t))
+				    ((const :format "%v " :tree-type) (const week))
+				    ((const :format "%v " :unnarrowed) (const t))
+				    ((const :format "%v " :table-line-pos) (string))
+				    ((const :format "%v " :kill-buffer) (const t))))))))
+
+(defvar gnus-mylist-org--template-context (list gnus-mylist-org-capture-key ""
+                                                '((in-mode . "article-mode")
+                                                  (in-mode . "summary-mode")))
+  "Context for when `gnus-mylist-org-capture-template' is available.")
 
 (defvar gnus-mylist-org--current-org-id nil
   "Internal variable; for temporary holding the current heading org-id.")
@@ -368,6 +468,14 @@ integration with org. By default KEY is set to \"C-c t\"."
   (org-defkey org-agenda-keymap     (kbd key) #'gnus-mylist-org-handle-mail)
   (define-key gnus-summary-mode-map (kbd key) #'gnus-mylist-org-capture-mail)
   (define-key gnus-article-mode-map (kbd key) #'gnus-mylist-org-capture-mail))
+
+;; init actions
+(defun gnus-mylist-org-init ()
+  "Start-up actions for `gnus-mylist-org'."
+  (when gnus-mylist-org-capture-template
+    (add-to-list 'org-capture-templates gnus-mylist-org-capture-template ))
+  (when gnus-mylist-org--template-context
+    (add-to-list 'org-capture-templates-contexts gnus-mylist-org--template-context )))
 
 (provide 'gnus-mylist-org)
 ;;; gnus-mylist-org.el ends here
