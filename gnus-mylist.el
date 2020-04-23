@@ -503,13 +503,16 @@ indicate an action type, see `gnus-mylist--crumb-save'."
 In case something goes wrong, crumb files are used to restore
 `gnus-mylist--articles-list', as not to lose any previous
 actions."
-  (dolist (crumb (directory-files gnus-mylist-breadcrumbs-dir  t "^cr-"))
-    (cond
-     ((string-match-p "-new.el$" crumb) (gnus-mylist-load-crumb-new crumb))
-     ((string-match-p "-upd.el$" crumb) (gnus-mylist-load-crumb-upd crumb))
-     ((string-match-p "-del.el$" crumb) (gnus-mylist-load-crumb-del crumb))
-     (t (message "Warning: found bad crumb: %s" (file-name-nondirectory crumb))))
-    (delete-file crumb)))
+  (let ((icount 0))
+    (dolist (crumb (directory-files gnus-mylist-breadcrumbs-dir  t "^cr-") icount)
+      (cl-incf icount)
+      (cond
+       ((string-match-p "-new.el$" crumb) (gnus-mylist-load-crumb-new crumb))
+       ((string-match-p "-upd.el$" crumb) (gnus-mylist-load-crumb-upd crumb))
+       ((string-match-p "-del.el$" crumb) (gnus-mylist-load-crumb-del crumb))
+       (t (cl-decf icount)
+          (message "Warning: found bad crumb: %s" (file-name-nondirectory crumb))))
+      (delete-file crumb))))
 
 (defun gnus-mylist-load-crumb-new (crumb-file)
   "Load the elisp data in CRUMB-FILE to `gnus-mylist--articles-list'.
@@ -576,12 +579,18 @@ FILE is the full file path."
   "Read gnus-mylist data from a previous session."
   (interactive)
   (when gnus-mylist-file
-    (gnus-message 5 "Reading gnus-mylist data from %s." gnus-mylist-file)
-    (setq gnus-mylist--articles-list
-          (gnus-mylist--read-file-contents gnus-mylist-file))
-    (gnus-mylist--crumbs-load)
-    (gnus-message 5 "Read %d item(s) from %s... done."
-                  (length gnus-mylist--articles-list) gnus-mylist-file)))
+    (if (file-readable-p gnus-mylist-file)
+        (progn
+          (gnus-message 5 "Reading gnus-mylist data from %s." gnus-mylist-file)
+          (setq gnus-mylist--articles-list
+                (gnus-mylist--read-file-contents gnus-mylist-file))
+          (gnus-message 5 "Read %d item(s) from %s... done."
+                        (length gnus-mylist--articles-list) gnus-mylist-file)
+          (let ((numcrumbs (gnus-mylist--crumbs-load)))
+            (gnus-message 5 "Loaded %d item(s) gnus-mylist crumbs found... done" numcrumbs)
+            (when (> numcrumbs 0)
+              gnus-mylist-save)))
+      (error "Error: can not read gnus-mylist data from %s" gnus-mylist-file))))
 
 (defun gnus-mylist-count-saved ()
   "Count the number of articles saved in `gnus-mylist-file'."
