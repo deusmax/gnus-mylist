@@ -589,7 +589,7 @@ FILE is the full file path."
           (let ((numcrumbs (gnus-mylist--crumbs-load)))
             (gnus-message 5 "Loaded %d item(s) gnus-mylist crumbs found... done" numcrumbs)
             (when (> numcrumbs 0)
-              gnus-mylist-save)))
+              (gnus-mylist-save))))
       (error "Error: can not read gnus-mylist data from %s" gnus-mylist-file))))
 
 (defun gnus-mylist-count-saved ()
