@@ -2,7 +2,7 @@
 #+options: broken-links:nil c:nil creator:nil d:nil date:t e:t
 #+options: email:nil f:t inline:t num:t p:nil pri:nil prop:nil stat:t tags:t
 #+options: tasks:t tex:t timestamp:nil title:t toc:t todo:t |:t
-#+title: gnus-mylist README
+#+title: gnus-notes README
 #+date: <2020-04-19 Sun>
 #+author: Deus Max
 #+email: deusmax@gmx.com
@@ -13,37 +13,38 @@
 
 * Introduction
 
-  Track (my) Gnus articles and emails - not all of them, just what matters to me,
-  using a list and the convenience of a helm interface.
+  Keep notes on Gnus articles and emails - not all of them, just the ones that matter,
+  viewed with the convenience of helm. Keep more extensive notes and tasks about
+  your gnus-notes with Org-mode.
 
-  The gnus-mylist works with your Gnus, it can not replace it. Neither can it damage
+  The gnus-notes works with your Gnus, it can not replace it. Neither can it damage
   or hurt your Gnus. Your Gnus is safe. It just works in the background,
   unimpending, efficiently and quietly, keeping track of the articles read with
-  gnus. When an article is read, it adds a quick note to mylist. It removes notes of
-  deleted articles or the ones expunged by gnus.
+  gnus. When an article is read, it adds a quick note. It removes notes of deleted
+  articles or the ones expunged by gnus.
 
   Providing a good level of Gnus-Org integration. It will enhance your Gnus
   experience. Simply, that's all.
 
-  This simplicity allows the user to add and remove articles to gnus-mylist, stress
-  free.
+  This simplicity allows the user to add and remove articles to gnus-notes, stress
+  free. Gnus-notes can be used without having to start gnus.
 
-  Viewing gnus-mylist with the powerful helm interface brings great search
+  Viewing gnus-notes with the powerful helm interface brings great search
   capabilities and all the other helm goodness. \\
-  Gnus-mylist has been built around helm.
+  Gnus-notes has been built around helm.
 
   Gnus is not limited to email, that is why gnus uses the term "articles".
-  Gnus-mylist follows the Gnus general philosophy, it also uses the term "articles".
+  Gnus-notes follows the Gnus general philosophy, it also uses the term "articles".
   Most testing has been done on email (and IMAP in particular) and RSS.
 
   This work is a fork of =unhammer='s [[https://github.com/unhammer/gnus-recent/blob/master/gnus-recent.el][gnus-recent]]. Some ideas for integration with
-  other emacs features are from =ericabrahamsens='s [[http://elpa.gnu.org/packages/gnorb.html][gnorb]] packages.
+  other emacs features are from =ericabrahamsens='s [[http://elpa.gnu.org/packages/gnorb.html][gnorb]] package.
 
   This is still work in progress. But safe to use.
 
 ** Prerequisites
 
-   The following packages are required, for =gnus-mylist=:
+   The following packages are required, for =gnus-notes=:
    - =bbdb= and =bbdb-mua=
    - =gnus=
    - =org-gnus= or the newer =ol-gnus=.
@@ -55,40 +56,40 @@
    This is not an Emacs package, so installation is still a manual process. Place
    the files in a directory and add it the load path. Load the library or using
    require:
-   : (require 'gnus-mylist)
+   : (require 'gnus-notes)
 
-   Now your gnus-mylist is waiting to start tracking your Gnus. After viewing a few
-   emails or other gnus articles, to start using gnus-mylist, invoke the helm
-   command 'gnus-mylist-helm'. This command is the main entry to gnus-mylist. For
+   Now your gnus-notes is waiting to start tracking your Gnus. After viewing a few
+   emails or other gnus articles, to start using gnus-notes, invoke the helm
+   command 'gnus-notes-helm'. This command is the main entry to gnus-notes. For
    quick access, add an option to your favorite hydra or assign to a global key:
 
-   : (global-set-key (kbd "C-c m") #'gnus-mylist-helm)
+   : (global-set-key (kbd "C-c m") #'gnus-notes-helm)
 
 
    For org integration the user has to define a key sequence. This should be set in
    the user configuration file or run manually. The convenience function
-   =gnus-mylist-org-define-key= can be used:
-   : (gnus-mylist-org-define-key)  ; default "C-c t"
+   =gnus-notes-org-define-key= can be used:
+   : (gnus-notes-org-define-key)  ; default "C-c t"
    : or
-   : (gnus-mylist-org-define-key "C-c X") ; use another key sequence
+   : (gnus-notes-org-define-key "C-c X") ; use another key sequence
 
    Advanced users can look at the definition of the above function, to fine-tune
    their needs.
 
 * Usage
 
-  After loading the =gnus-mylist= library, start your =gnus= and read a few
+  After loading the =gnus-notes= library, start your =gnus= and read a few
   articles (emails). To view the list of the emails and articles just read, type
-  the command =gnus-mylist-helm=.
+  the command =gnus-notes-helm=.
 
   For quick access assign to a global key, such as:
-  : (global-set-key (kbd "C-c m") #'gnus-mylist-helm)
+  : (global-set-key (kbd "C-c m") #'gnus-notes-helm)
 
   Or add it as an option to your favorite hydra.
 
-** Viewing mylist
+** Viewing notes
 
-   Below is a shot of =helm-gnus-mylist= showing (fake) emails from the [[https://elpa.gnu.org/packages/gnus-mock.html][gnus-mock]]
+   Below is a shot of =helm-gnus-notes= showing (fake) emails from the [[https://elpa.gnu.org/packages/gnus-mock.html][gnus-mock]]
    package (a Mock Gnus installation for testing).
    #+name: fig:helm-mocky01
    [[file:./img/readme-Mocky-01.png]]
@@ -98,7 +99,7 @@
    #+name: fig:helm-mocky02
    [[file:./img/readme-Mocky-02.png]]
 
-   Gnus-mylist displays one email (or gnus article) each line, with the following
+   Gnus-notes displays one email (or gnus article) each line, with the following
    information:
    1. Sender or recipient, according to =gnus-ignored-from-addresses=.
    2. Subject line
@@ -134,21 +135,21 @@
    | =[F3]= | Show thread                | ~gnus-summary-refer-thread~ (~A T~)                                                  |
    | =[F4]= | Copy org-link to kill ring | Create an org-link                                                                   |
    | =[F5]= | Insert org-link            | Insert org-link to point in buffer                                                   |
-   | =[F6]= | Remove marked article(s)   | Remove current article or multiple marked articles (C-<space>) from the gnus-mylist. |
+   | =[F6]= | Remove marked article(s)   | Remove current article or multiple marked articles (C-<space>) from the gnus-notes. |
    |        |                            | Gnus is not affected, this only affects the list.                                    |
    | =[F7]= | Display BBDB entries       | Display BBDB buffer.                                                                 |
    | =[F8]= | Clear all                  | Start over. Clear ALL the articles on the list. Careful!                             |
    |--------+----------------------------+--------------------------------------------------------------------------------------|
 
    Applying any of the actions, will close the helm buffer. You can get back by
-   restarting =helm-gnus-mylist= or resuming with =helm-resume= (=C-x c b=).
+   restarting =helm-gnus-notes= or resuming with =helm-resume= (=C-x c b=).
 
 *** Persistent Actions
 
     The message the top of the helm window is a hint to persistent actions.
     Persistent actions are special actions that do not close the helm buffer.
     : C-j: quick helm config and actions (keeping session)
-    Gnus-mylist provides a hydra, to select from a number of available persistent
+    Gnus-notes provides a hydra, to select from a number of available persistent
     actions, a mix of helm configuration items and actions on the articles:
 
     #+name: fig:persistent-actions
@@ -156,7 +157,7 @@
 
 * Org integration
 
-  The =C-c t= key sequence activates the =gnus-mylist= integration functionalities.
+  The =C-c t= key sequence activates the =gnus-notes= integration functionalities.
   It is associated with different actions depending on the mode:
   - in =org-mode=, it lists all the =gnus:= type links under the current org subtree.
   - in =summary= or =article-mode=, i.e. while reading in gnus, lets you directly
@@ -179,7 +180,7 @@
   [[file:img/readme-org-current-heading.png]]
 
   The options have the following meaning:
-  - =h=: View in helm using mylist. Only the articles in mylist will be displayed.
+  - =h=: View in helm using notes. Only the articles in notes will be displayed.
   - =t=: Apply a ~Wide-reply-and-yank~ (~S W~) to top item.
   - =v=: Search Gnus using the =nnir= gnus engine. This is configured by default for
     the =nnimap= engine. For other gnus back ends, some setup is required. See the
@@ -201,9 +202,9 @@
 
    While reading, the mostly email, articles in gnus the user can use the familiar
    =C-c t= key sequence to directly capture an org-note using the preselected
-   =gnus-mylist-org-capture-key= (default "e" for email) org-capture template. A
-   suggested capture template is provided by gnus-mylist, which the user may
-   customize. See =gnus-mylist-org-capture-template=.
+   =gnus-notes-org-capture-key= (default "e" for email) org-capture template. A
+   suggested capture template is provided by gnus-notes, which the user may
+   customize. See =gnus-notes-org-capture-template=.
 
    This is a handy way for creating a "REPLY" task for responding to an email. Once
    the reply has been sent, the task can be marked "REPLIED" or "DONE", or if
@@ -215,10 +216,10 @@
   Most development and testing has been done using gnus IMAP, keeping the emails on
   the IMAP server.
 
-  Gnus-mylist works in the background, while the user is using gnus. It takes a note
+  Gnus-notes works in the background, while the user is using gnus. It takes a note
   of each article you read. The note contains some basic information about the
   article. The first time an article is read, this note is stored in a list
-  (=gnus-mylist--articles-list=).
+  (=gnus-notes--articles-list=).
 
   The above process has two consequences:
   1. the article notes are saved in the sequence read by the user (you).
@@ -226,34 +227,37 @@
      the list.
 
   This provides a natural first filtering of the articles, that helps to keep the
-  size small. Gnus-mylist does not try (or want) to keep track of everything.
+  size small. Gnus-notes does not try (or want) to keep track of everything.
 
 ** Saving
 
-   Gnus-mylist creates its own directory for its saving needs. This is defined in
-   =gnus-mylist-top-dir=, default ="~/.emacs.d/gnus-mylist"= . The Gnus-mylist list
-   is saved in =gnus-mylist-file=, default ="~/.emacs.d/gnus-mylist/articles.el"=.
+   Gnus-notes creates its own directory for its saving needs. This is defined in
+   =gnus-notes-top-dir=, default ="~/.emacs.d/gnus-notes"= . The Gnus-notes list
+   is saved in =gnus-notes-file=, default ="~/.emacs.d/gnus-notes/articles.el"=.
 
    To guard against data-loss, a breadcrumbs directory (for the crumbs left behind!)
-   is defined in =gnus-mylist-breadcrumbs-dir=, default
-   ="~/.emacs.d/gnus-mylist/crumbs"=. These "crumbs" will be cleaned up when
-   gnus-mylist starts or is saved (~gnus-mylist-save~).
+   is defined in =gnus-notes-breadcrumbs-dir=, default
+   ="~/.emacs.d/gnus-notes/crumbs"=. These "crumbs" will be cleaned up when
+   gnus-notes starts or is saved (~gnus-notes-save~).
 
    These path locations can be changed using the customize interface.
 
 ** Interaction with Gnus
 
-   Gnus-mylist tries to track gnus operations, to provide an accurate status. Direct
-   gnus operations will update article details in gnus-mylist:
+   Gnus-notes tries to track gnus operations, to provide an accurate status. Direct
+   gnus operations will update article details in gnus-notes:
    - Moving (=B M=) an article to another group, will update the group location
-   - Deleting (=B <del>=) article(s) will remove it/them from gnus-mylist
-   - Expunging (=G x=) will also remove article(s) from gnus-mylist
+   - Deleting (=B <del>=) article(s) will remove it/them from gnus-notes
+   - Expunging (=G x=) will also remove article(s) from gnus-notes
 
-   On the other hand, *operations to gnus-mylist have no effect on gnus*, see
-   [[id:26cf3c01-579c-487c-bcce-20c22e5da9eb][Actions]]. So, when an article is removed/deleted from gnus-mylist, only the note
+   On the other hand, *operations to gnus-notes have no effect on gnus*, see
+   [[id:26cf3c01-579c-487c-bcce-20c22e5da9eb][Actions]]. So, when an article is removed/deleted from gnus-notes, only the note
    is deleted from the list. The actual article(s) is still available in gnus and
-   can be read back to gnus-mylist.
+   can be read back to gnus-notes.
 
+* License
+  This work is distributed under the terms of the Gnu General Public License Version
+  3 or later. See [[LICENSE][LICENSE]].
 * Emacs                                                   :noexport:comment:
 
 #  LocalWords:  README BBDB subtree
