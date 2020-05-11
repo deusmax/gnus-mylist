@@ -42,39 +42,46 @@
 
   This is still work in progress. But safe to use.
 
-** Prerequisites
+* Prerequisites
 
-   The following packages are required, for =gnus-notes=:
-   - =bbdb= and =bbdb-mua=
-   - =gnus=
-   - =org-gnus= or the newer =ol-gnus=.
-   - =helm-lib=
-   - =s=
+  The following packages are required, for =gnus-notes=:
+  - =bbdb= and =bbdb-mua=
+  - =gnus=
+  - =org-gnus= or the newer =ol-gnus=.
+  - =helm-lib=
+  - =s=
 
-** Installation
+* Installation
 
-   This is not an Emacs package, so installation is still a manual process. Place
-   the files in a directory and add it the load path. Load the library or using
-   require:
-   : (require 'gnus-notes)
+  This is not an Emacs package, so installation is still a manual process. Place
+  the files in a directory and add it the load path. Load the library or using
+  require:
+  #+begin_src emacs-lisp
+    (require 'gnus-notes-helm)
+    (gnus-notes-init)
+  #+end_src
 
-   Now your gnus-notes is waiting to start tracking your Gnus. After viewing a few
-   emails or other gnus articles, to start using gnus-notes, invoke the helm
-   command 'gnus-notes-helm'. This command is the main entry to gnus-notes. For
-   quick access, add an option to your favorite hydra or assign to a global key:
+  Now your gnus-notes is waiting to start tracking your Gnus. After viewing a few
+  emails or other gnus articles, to start using gnus-notes, invoke the helm
+  command 'gnus-notes-helm'. This command is the main entry to gnus-notes. For
+  quick access, add an option to your favorite hydra or assign to a global key:
 
-   : (global-set-key (kbd "C-c m") #'gnus-notes-helm)
+  #+begin_src emacs-lisp
+    (global-set-key (kbd "C-c m") #'gnus-notes-helm)
+  #+end_src
 
+  For org integration the user has to define a key sequence. This should be set in
+  the user configuration file or run manually. The convenience function
+  =gnus-notes-org-define-key= can be used:
 
-   For org integration the user has to define a key sequence. This should be set in
-   the user configuration file or run manually. The convenience function
-   =gnus-notes-org-define-key= can be used:
-   : (gnus-notes-org-define-key)  ; default "C-c t"
-   : or
-   : (gnus-notes-org-define-key "C-c X") ; use another key sequence
+  #+begin_src emacs-lisp
+    (gnus-notes-org-define-key)  ; default "C-c t"
+    ;; or
+    (gnus-notes-org-define-key "C-c X") ; use another key sequence
+  #+end_src
 
-   Advanced users can look at the definition of the above function, to fine-tune
-   their needs.
+  Advanced users can look at the definition of the above function, to fine-tune
+  their needs.
 
 * Usage
 
@@ -82,10 +89,17 @@
   articles (emails). To view the list of the emails and articles just read, type
   the command =gnus-notes-helm=.
 
-  For quick access assign to a global key, such as:
-  : (global-set-key (kbd "C-c m") #'gnus-notes-helm)
+  For quick access asign to a global key, such as:
+   #+begin_src emacs-lisp
+     (global-set-key (kbd "C-c m") #'gnus-notes-helm)
+   #+end_src
 
   Or add it as an option to your favorite hydra.
+
+  Gnus is very efficient in displaying new emails, but sometimes it is hard to
+  remember the =Group= the rest of the thread was filed. Just =C-c m=, to fire up
+  the gnus-note helm interface and quickly narrow to the thread using subject
+  words or the sender's name. The filling =Group= will be shown.
 
 ** Viewing notes
 
@@ -146,7 +160,7 @@
 
 *** Persistent Actions
 
-    The message the top of the helm window is a hint to persistent actions.
+    The message at the top of the helm window is a hint to persistent actions.
     Persistent actions are special actions that do not close the helm buffer.
     : C-j: quick helm config and actions (keeping session)
     Gnus-notes provides a hydra, to select from a number of available persistent
@@ -202,7 +216,7 @@
 
    While reading, the mostly email, articles in gnus the user can use the familiar
    =C-c t= key sequence to directly capture an org-note using the preselected
-   =gnus-notes-org-capture-key= (default "e" for email) org-capture template. A
+   =gnus-notes-org-capture-key= (default "*e*" for email) org-capture template. A
    suggested capture template is provided by gnus-notes, which the user may
    customize. See =gnus-notes-org-capture-template=.
 
@@ -254,6 +268,14 @@
    [[id:26cf3c01-579c-487c-bcce-20c22e5da9eb][Actions]]. So, when an article is removed/deleted from gnus-notes, only the note
    is deleted from the list. The actual article(s) is still available in gnus and
    can be read back to gnus-notes.
+
+** Limitation due to Gnus dependance
+
+   As mentioned above, gnus-notes tracks Gnus. It does not know of any actions
+   performed outside of Gnus. This means that any actions such as moving, deleting
+   performed using the web-interface to your imap email, will not be reflected in
+   gnus-notes. So, for example, gnus-notes may display the wrong group for an email
+   that was moved using the web-interface.
 
 * License
   This work is distributed under the terms of the Gnu General Public License Version
