@@ -119,7 +119,7 @@ Used only when `gnus-notes-file' is non-nil."
   :group 'gnus-notes
   :type 'directory)
 
-(defcustom gnus-notes-format-time-string "%F %a %T"
+(defcustom gnus-notes-format-time-string "%F %a %H:%M"
   "A string for formatting the article date.
 The format is used by `format-time-string'. See its documentation
 for details on format specifiers. For example, to produce a full
@@ -168,11 +168,12 @@ otherwise.
 Argument STRING is the gnus-group name."
   (decode-coding-string string (or charset 'utf-8-emacs) t))
 
-(defun gnus-notes-date-format (date)
+(defun gnus-notes-date-format (date &optional time-format)
   "Convert the DATE to string.
-Date format specified in `gnus-notes-format-time-string'."
+Optional date format TIME-FORMAT or the default
+`gnus-notes-format-time-string' used."
   (condition-case ()
-      (format-time-string gnus-notes-format-time-string (gnus-date-get-time date))
+      (format-time-string (or time-format gnus-notes-format-time-string) (gnus-date-get-time date))
     (error "Error in date format conversion")))
 
 (defun gnus-notes-get-email (address &optional unbracket)
@@ -352,6 +353,15 @@ Returns a cons cell as (gnus-group . message-id)."
   "Trim brackets from TXT string."
   (replace-regexp-in-string "^<\\|>$" "" txt))
 
+(defun gnus-notes-quick-note (artdata &optional prefix)
+  "Create a quick note for the ARTDATA Gnus article.
+The quick note includes a PREFIX, an org timestamp and a gnus
+link to the article. The prefix default is \"- \"."
+  (format "%s[%s] %s"
+          (or prefix "- ")
+          (gnus-notes-date-format (alist-get 'date artdata) gnus-notes-format-time-string)
+          (gnus-notes--create-org-link artdata)))
+
 (defun gnus-notes-kill-new-org-link (artdata)
   "Add to the `kill-ring' an `org-mode' link to ARTDATA Gnus article."
   (kill-new (gnus-notes--create-org-link artdata))
@@ -360,6 +370,19 @@ Returns a cons cell as (gnus-group . message-id)."
 (defun gnus-notes-insert-org-link (artdata)
   "Insert an `org-mode' link to ARTDATA Gnus article."
   (insert (gnus-notes--create-org-link artdata)))
+
+(defun gnus-notes-insert-quick-note (artdata)
+  "Insert a quick note for the ARTDATA Gnus article at point."
+  (if (eq major-mode 'org-mode)
+      (if (org-list-struct)                 ; t: point is on a list
+          (progn
+            (when (> (+ 2 (point)) (line-beginning-position))
+              (org-end-of-line))
+            (org-insert-item)
+            (insert (gnus-notes-quick-note artdata "")))
+        (org-return-indent)
+        (insert (gnus-notes-quick-note artdata))))
+  (insert (gnus-notes-quick-note artdata " - ")))
 
 (defun gnus-notes-update-message-id (message-id to-group &optional no-crumb-save)
   "Update the Gnus article with MESSAGE-ID in `gnus-notes--articles-list'.

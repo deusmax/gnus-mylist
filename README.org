@@ -141,19 +141,20 @@
    By default the following actions are available:
    #+name: tbl:actions-default
    #+caption: helm default actions
-   |--------+----------------------------+--------------------------------------------------------------------------------------|
-   | Key    | Action                     | Remarks                                                                              |
-   |--------+----------------------------+--------------------------------------------------------------------------------------|
-   | =[F1]= | Open article               | will open the article in gnus                                                        |
-   | =[F2]= | Reply (to) article         | ~Wide-reply-and-yank~ (~S W~)                                                        |
-   | =[F3]= | Show thread                | ~gnus-summary-refer-thread~ (~A T~)                                                  |
-   | =[F4]= | Copy org-link to kill ring | Create an org-link                                                                   |
-   | =[F5]= | Insert org-link            | Insert org-link to point in buffer                                                   |
-   | =[F6]= | Remove marked article(s)   | Remove current article or multiple marked articles (C-<space>) from the gnus-notes. |
-   |        |                            | Gnus is not affected, this only affects the list.                                    |
-   | =[F7]= | Display BBDB entries       | Display BBDB buffer.                                                                 |
-   | =[F8]= | Clear all                  | Start over. Clear ALL the articles on the list. Careful!                             |
-   |--------+----------------------------+--------------------------------------------------------------------------------------|
+   |--------+----------------------------+-------------------------------------------------------------------------------------|
+   | Key    | Action                     | Remarks                                                                             |
+   |--------+----------------------------+-------------------------------------------------------------------------------------|
+   | =[F1]= | Open article               | will open the article in gnus                                                       |
+   | =[F2]= | Reply (to) article         | ~Wide-reply-and-yank~ (~S W~)                                                       |
+   | =[F3]= | Show thread                | ~gnus-summary-refer-thread~ (~A T~)                                                 |
+   | =[F4]= | Copy org-link to kill ring | Create an org-link                                                                  |
+   | =[F5]= | Insert org-link            | Insert org-link at point in buffer                                                  |
+   | =[F6]= | Insert quick note          | Insert quick note at point in buffer                                                |
+   | =[F7]= | Remove marked article(s)   | Remove current article or multiple marked articles (C-<space>) from the gnus-notes. |
+   |        |                            | Gnus is not affected, this only affects the list.                                   |
+   | =[F8]= | Display BBDB entries       | Display BBDB buffer.                                                                |
+   | =[F9]= | Clear all                  | Start over. Clear ALL the articles on the list. Careful!                            |
+   |--------+----------------------------+-------------------------------------------------------------------------------------|
 
    Applying any of the actions, will close the helm buffer. You can get back by
    restarting =helm-gnus-notes= or resuming with =helm-resume= (=C-x c b=).

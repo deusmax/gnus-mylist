@@ -246,6 +246,7 @@ Also a number of possible actions are defined."
                              ("Show thread"                . gnus-notes--show-article-thread)
                              ("Copy org link to kill ring" . gnus-notes-kill-new-org-link)
                              ("Insert org link"            . gnus-notes-insert-org-link)
+                             ("Insert quick-note"          . gnus-notes-insert-quick-note)
                              ("Remove marked article(s)"   . gnus-notes-helm-forget)
                              ("Display BBDB entries"       . gnus-notes-bbdb-display-all)
                              ("Clear all"                  . gnus-notes-forget-all)))
